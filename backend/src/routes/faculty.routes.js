@@ -29,5 +29,23 @@ router.get(
   authorize([roles.FACULTY, roles.ADMIN]),
   faculty.getCases,
 );
+router.get(
+  "/approval-queue",
+  auth,
+  authorize([roles.FACULTY, roles.ADMIN]),
+  faculty.getApprovalQueue,
+);
+router.post(
+  "/cases/:id/approve",
+  auth,
+  authorize([roles.FACULTY, roles.ADMIN]),
+  faculty.approveCase,
+);
+router.patch(
+  "/cases/:id/status",
+  auth,
+  authorize([roles.FACULTY, roles.ADMIN]),
+  faculty.updateCaseStatus,
+);
 
 module.exports = router;

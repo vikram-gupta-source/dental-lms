@@ -8,10 +8,14 @@ import DashboardScreen from "../screens/common/DashboardScreen";
 import UsersScreen from "../screens/admin/UsersScreen";
 import AppointmentsAdminScreen from "../screens/admin/AppointmentsAdminScreen";
 import AdminCasesScreen from "../screens/admin/AdminCasesScreen";
+import OpdQueueScreen from "../screens/admin/OpdQueueScreen";
 import FacultyCasesScreen from "../screens/faculty/FacultyCasesScreen";
 import FacultyApprovalsScreen from "../screens/faculty/FacultyApprovalsScreen";
+import FacultyQueueScreen from "../screens/faculty/FacultyQueueScreen";
 import CasesScreen from "../screens/student/CasesScreen";
 import ProcedureLogScreen from "../screens/student/ProcedureLogScreen";
+import StudentProfileScreen from "../screens/student/StudentProfileScreen";
+import StudentQueueScreen from "../screens/student/StudentQueueScreen";
 import PatientAppointmentsScreen from "../screens/patient/PatientAppointmentsScreen";
 import PatientProfileScreen from "../screens/patient/PatientProfileScreen";
 
@@ -39,19 +43,12 @@ export default function RoleNavigator() {
         tabBarActiveTintColor: "#2563EB",
         tabBarInactiveTintColor: "#64748B",
         tabBarStyle: {
-          position: "absolute",
-          left: 0,
-          right: 0,
-          bottom: 0,
           height: 62,
           paddingTop: 4,
           paddingBottom: 6,
           backgroundColor: "#fff",
           borderTopWidth: 1,
           borderTopColor: "#E2E8F0",
-          zIndex: 9999,
-          elevation: 20,
-          pointerEvents: "auto",
         },
         sceneStyle: { backgroundColor: "#F1F5F9" },
         tabBarLabelStyle: { fontSize: 12 },
@@ -61,6 +58,8 @@ export default function RoleNavigator() {
             Users: "people-outline",
             Appointments: "calendar-outline",
             "My Appointments": "calendar-outline",
+            "OPD Queue": "time-outline",
+            Queue: "time-outline",
             Cases: "folder-open-outline",
             "Assigned Cases": "briefcase-outline",
             Approvals: "checkmark-done-outline",
@@ -87,6 +86,7 @@ export default function RoleNavigator() {
 
       {role === "admin" && (
         <>
+          <Tab.Screen name="OPD Queue" component={OpdQueueScreen} />
           <Tab.Screen name="Users" component={UsersScreen} />
           <Tab.Screen name="Appointments" component={AppointmentsAdminScreen} />
           <Tab.Screen name="Cases" component={AdminCasesScreen} />
@@ -95,6 +95,7 @@ export default function RoleNavigator() {
 
       {role === "faculty" && (
         <>
+          <Tab.Screen name="Queue" component={FacultyQueueScreen} />
           <Tab.Screen name="Assigned Cases" component={FacultyCasesScreen} />
           <Tab.Screen name="Approvals" component={FacultyApprovalsScreen} />
         </>
@@ -102,8 +103,10 @@ export default function RoleNavigator() {
 
       {role === "student" && (
         <>
+          <Tab.Screen name="Queue" component={StudentQueueScreen} />
           <Tab.Screen name="My Cases" component={CasesScreen} />
           <Tab.Screen name="Procedure Log" component={ProcedureLogScreen} />
+          <Tab.Screen name="Profile" component={StudentProfileScreen} />
         </>
       )}
 

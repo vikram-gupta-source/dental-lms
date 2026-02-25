@@ -1,3 +1,5 @@
+import { Platform } from "react-native";
+
 const ui = {
   colors: {
     bg: "#F1F5F9",
@@ -7,16 +9,20 @@ const ui = {
     primary: "#2563EB",
     muted: "#64748B",
     danger: "#DC2626",
+    success: "#16A34A",
   },
   radius: { sm: 10, md: 14, lg: 18 },
   space: { xs: 6, sm: 10, md: 14, lg: 18 },
-  cardShadow: {
-    shadowColor: "#000",
-    shadowOpacity: 0.05,
-    shadowRadius: 8,
-    shadowOffset: { width: 0, height: 2 },
-    elevation: 2,
-  },
+  cardShadow:
+    Platform.OS === "web"
+      ? { boxShadow: "0px 2px 8px rgba(0, 0, 0, 0.05)" }
+      : {
+          shadowColor: "#000",
+          shadowOpacity: 0.05,
+          shadowRadius: 8,
+          shadowOffset: { width: 0, height: 2 },
+          elevation: 2,
+        },
 };
 
 export { ui };

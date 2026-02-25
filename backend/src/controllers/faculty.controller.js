@@ -1,5 +1,6 @@
 const FacultyProfile = require("../models/FacultyProfile");
-const CaseRecord = require("../models/ClinicalCase");
+const CaseRecord = require("../models/CaseRecord");
+const User = require("../models/User");
 
 // Get all faculty profiles
 exports.getAllFaculty = async (req, res) => {
@@ -72,8 +73,14 @@ exports.deleteFaculty = async (req, res) => {
 // GET /api/faculty/approval-queue
 const getApprovalQueue = async (req, res) => {
   try {
-    const data = await CaseRecord.find({ status: "Submitted" })
-      .populate("patient assignedStudent")
+    const faculty = await User.findById(req.user.id).select("department").lean();
+    const query = { status: "Submitted" };
+    if (faculty?.department) query.department = faculty.department;
+
+    const data = await CaseRecord.find(query)
+      .populate("assignedStudent", "name email")
+      .populate("patient", "name mrn phone")
+      .populate("supervisor", "name department")
       .sort({ updatedAt: -1 });
 
     return res.status(200).json({ success: true, data });
@@ -103,6 +110,43 @@ const approveCase = async (req, res) => {
   }
 };
 
+// PATCH /api/faculty/cases/:id/status
+const updateCaseStatus = async (req, res) => {
+  try {
+    const allowedStatuses = ["Approved", "Rejected", "Referred"];
+    const nextStatus = String(req.body?.status || "").trim();
+
+    if (!allowedStatuses.includes(nextStatus)) {
+      return res.status(400).json({
+        success: false,
+        message: `status must be one of: ${allowedStatuses.join(", ")}`,
+      });
+    }
+
+    const update = { status: nextStatus, supervisor: req.user.id };
+    if (nextStatus === "Referred") {
+      const departments = Array.isArray(req.body?.referredToDepartments)
+        ? req.body.referredToDepartments.filter(Boolean)
+        : [];
+      update.referredToDepartments = departments;
+    }
+
+    const updated = await CaseRecord.findByIdAndUpdate(req.params.id, update, {
+      new: true,
+    });
+
+    if (!updated) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Case not found" });
+    }
+
+    return res.status(200).json({ success: true, data: updated });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+};
+
 // GET /api/faculty/dashboard
 const getDashboard = async (req, res) => {
   return res
@@ -112,12 +156,23 @@ const getDashboard = async (req, res) => {
 
 // GET /api/faculty/cases
 const getCases = async (req, res) => {
-  return res.status(200).json({ ok: true, module: "faculty", items: [] });
+  try {
+    const data = await CaseRecord.find({ supervisor: req.user.id })
+      .populate("assignedStudent", "name email")
+      .populate("patient", "name mrn phone")
+      .populate("supervisor", "name department")
+      .sort({ updatedAt: -1 });
+
+    return res.status(200).json({ success: true, data });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
 };
 
 module.exports = {
   getApprovalQueue,
   approveCase,
+  updateCaseStatus,
   getDashboard,
   getCases,
 };

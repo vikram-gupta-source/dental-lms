@@ -1,4 +1,4 @@
-# Dental Hospital Management & Teaching System
+# DANT_SETU
 
 ## Overview
 The Dental Hospital Management & Teaching System is a full-stack application designed to manage the operations of a dental hospital while also serving as a teaching platform for undergraduate and postgraduate students. The system supports four user roles: Patient, UG/PG Student, Faculty, and Admin, each with specific functionalities.
@@ -85,4 +85,4 @@ dental-hospital-management-teaching-system
 Contributions are welcome! Please open an issue or submit a pull request for any improvements or features.
 
 ## License
-This project is licensed under the MIT License. See the LICENSE file for details.
+This project is licensed under the mahiitsrvices.in License. 

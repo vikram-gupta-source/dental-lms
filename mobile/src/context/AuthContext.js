@@ -1,8 +1,17 @@
 import React, { createContext, useEffect, useMemo, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Platform } from "react-native";
 import client from "../api/client";
 
 export const AuthContext = createContext(null);
+
+const isUsableToken = (value) => {
+  if (typeof value !== "string") return false;
+  const trimmed = value.trim();
+  if (!trimmed) return false;
+  if (trimmed === "null" || trimmed === "undefined") return false;
+  return true;
+};
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -12,13 +21,39 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     (async () => {
       try {
+        if (Platform.OS === "web") {
+          await AsyncStorage.multiRemove(["token", "user"]);
+          delete client.defaults.headers.common.Authorization;
+          setToken(null);
+          setUser(null);
+          return;
+        }
+
         const t = await AsyncStorage.getItem("token");
         const u = await AsyncStorage.getItem("user");
-        if (t) {
-          setToken(t);
+        const parsedUser = u ? JSON.parse(u) : null;
+
+        if (isUsableToken(t)) {
           client.defaults.headers.common.Authorization = `Bearer ${t}`;
+          try {
+            const { data } = await client.get("/auth/me");
+            setToken(t);
+            setUser(data?.user || parsedUser || null);
+          } catch {
+            delete client.defaults.headers.common.Authorization;
+            await AsyncStorage.multiRemove(["token", "user"]);
+            setToken(null);
+            setUser(null);
+          }
+        } else {
+          await AsyncStorage.multiRemove(["token", "user"]);
+          setToken(null);
+          setUser(null);
         }
-        if (u) setUser(JSON.parse(u));
+      } catch {
+        await AsyncStorage.multiRemove(["token", "user"]);
+        setToken(null);
+        setUser(null);
       } finally {
         setBooting(false);
       }

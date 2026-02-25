@@ -8,13 +8,13 @@ import RoleNavigator from "./RoleNavigator";
 const Stack = createNativeStackNavigator();
 
 export default function AppNavigator() {
-  const { token, booting } = useAuth();
+  const { token, user, booting } = useAuth();
 
   if (booting) return null;
 
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      {!token ? (
+      {!token || !user ? (
         <>
           <Stack.Screen name="Login" component={LoginScreen} />
           <Stack.Screen name="Register" component={RegisterScreen} />

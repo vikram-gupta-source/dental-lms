@@ -303,7 +303,14 @@ const getAllCases = async (req, res) => {
     if (req.query.department) q.department = req.query.department;
 
     const [items, total] = await Promise.all([
-      CaseRecord.find(q).sort({ updatedAt: -1 }).skip(skip).limit(limit).lean(),
+      CaseRecord.find(q)
+        .populate("patient", "name mrn phone")
+        .populate("assignedStudent", "name email department rollNo")
+        .populate("supervisor", "name department")
+        .sort({ updatedAt: -1 })
+        .skip(skip)
+        .limit(limit)
+        .lean(),
       CaseRecord.countDocuments(q),
     ]);
 
