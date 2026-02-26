@@ -31,6 +31,14 @@ const caseRecordSchema = new mongoose.Schema(
       enum: ["Draft", "Submitted", "Approved", "Rejected", "Referred"],
       default: "Draft",
     },
+    // Clinical details
+    complaint: { type: String, default: "" },
+    diagnosis: { type: String, default: "" },
+    procedure: { type: String, default: "" },
+    toothNo: { type: String, default: "" },
+    notes: { type: String, default: "" },
+    facultyApproved: { type: Boolean, default: false },
+    // Legacy fields
     currentOriginalScanPdfUrl: { type: String, default: "" },
     currentStructuredData: { type: mongoose.Schema.Types.Mixed, default: {} },
     referredToDepartments: [{ type: String, trim: true }],

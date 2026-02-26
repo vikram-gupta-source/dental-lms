@@ -33,5 +33,6 @@ app.use("/api/student", require("./routes/student.routes"));
 app.use("/api/faculty", require("./routes/faculty.routes"));
 app.use("/api/appointments", require("./routes/appointments.routes"));
 app.use("/api/dashboard", dashboardRoutes);
+app.use("/api/opd", require("./routes/opd.routes"));
 
 module.exports = app;

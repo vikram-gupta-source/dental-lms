@@ -14,6 +14,17 @@ import {
   PATIENT_RESCHEDULE_APPOINTMENT,
 } from "../../api/endpoints";
 import ui from "../../theme/ui";
+import { Picker } from "@react-native-picker/picker";
+
+const DEPARTMENTS = [
+  "Oral Surgery",
+  "Orthodontics",
+  "Periodontics",
+  "Endodontics",
+  "Prosthodontics",
+  "Pedodontics",
+  "General Dentistry",
+];
 
 export default function PatientAppointmentsScreen() {
   const [upcoming, setUpcoming] = useState([]);
@@ -97,12 +108,14 @@ export default function PatientAppointmentsScreen() {
           <View style={styles.modalWrap}>
             <View style={styles.modalCard}>
               <Text style={styles.modalTitle}>New Appointment</Text>
-              <TextInput
-                style={styles.input}
-                placeholder="Department"
-                value={department}
-                onChangeText={setDepartment}
-              />
+              <View style={styles.pickerWrap}>
+                <Picker selectedValue={department} onValueChange={setDepartment}>
+                  <Picker.Item label="Select Department" value="" />
+                  {DEPARTMENTS.map((dept) => (
+                    <Picker.Item key={dept} label={dept} value={dept} />
+                  ))}
+                </Picker>
+              </View>
               <TextInput
                 style={styles.input}
                 placeholder="Date (YYYY-MM-DDTHH:mm)"
@@ -216,5 +229,12 @@ const styles = StyleSheet.create({
     borderColor: ui.colors.border,
     padding: 12,
     borderRadius: ui.radius.md,
+  },
+  pickerWrap: {
+    borderWidth: 1,
+    borderColor: ui.colors.border,
+    borderRadius: ui.radius.md,
+    backgroundColor: "#fff",
+    overflow: "hidden",
   },
 });

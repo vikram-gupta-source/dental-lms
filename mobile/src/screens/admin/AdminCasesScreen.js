@@ -39,6 +39,23 @@ export default function AdminCasesScreen() {
               {item.department || "General Dentistry"}
             </Text>
             <Text style={styles.meta}>Status: {item.status || "N/A"}</Text>
+            <Text style={styles.meta}>
+              Patient: {item?.patient?.name || "-"}
+              {item?.patient?.mrn ? ` (${item.patient.mrn})` : ""}
+            </Text>
+            <Text style={styles.meta}>
+              Student: {item?.assignedStudent?.name || "-"}
+            </Text>
+            <Text style={styles.meta}>
+              Supervisor: {item?.supervisor?.name || "-"}
+            </Text>
+            <Text style={styles.meta}>Complaint: {item?.complaint || "-"}</Text>
+            <Text style={styles.meta}>Diagnosis: {item?.diagnosis || "-"}</Text>
+            <Text style={styles.meta}>
+              Procedure: {item?.procedure || "-"}
+              {item?.toothNo ? ` (Tooth ${item.toothNo})` : ""}
+            </Text>
+            <Text style={styles.meta}>Notes: {item?.notes || "-"}</Text>
           </View>
         )}
       />

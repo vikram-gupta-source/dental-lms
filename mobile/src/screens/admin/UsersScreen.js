@@ -15,6 +15,16 @@ import { Picker } from "@react-native-picker/picker";
 import { getAdminUsers, updateAdminUser } from "../../api/endpoints";
 import { ui } from "../../theme/ui";
 
+const DEPARTMENTS = [
+  "Oral Surgery",
+  "Orthodontics",
+  "Periodontics",
+  "Endodontics",
+  "Prosthodontics",
+  "Pedodontics",
+  "General Dentistry",
+];
+
 export default function UsersScreen() {
   const [users, setUsers] = useState([]);
   const [err, setErr] = useState("");
@@ -199,12 +209,17 @@ export default function UsersScreen() {
             />
             {role === "faculty" && (
               <>
-                <TextInput
-                  style={styles.input}
-                  value={department}
-                  onChangeText={setDepartment}
-                  placeholder="Department"
-                />
+                <View style={styles.pickerWrap}>
+                  <Picker
+                    selectedValue={department}
+                    onValueChange={setDepartment}
+                  >
+                    <Picker.Item label="Select Department" value="" />
+                    {DEPARTMENTS.map((dept) => (
+                      <Picker.Item key={dept} label={dept} value={dept} />
+                    ))}
+                  </Picker>
+                </View>
                 <TextInput
                   style={styles.input}
                   value={designation}
@@ -222,12 +237,17 @@ export default function UsersScreen() {
             )}
             {role === "student" && (
               <>
-                <TextInput
-                  style={styles.input}
-                  value={department}
-                  onChangeText={setDepartment}
-                  placeholder="Department"
-                />
+                <View style={styles.pickerWrap}>
+                  <Picker
+                    selectedValue={department}
+                    onValueChange={setDepartment}
+                  >
+                    <Picker.Item label="Select Department" value="" />
+                    {DEPARTMENTS.map((dept) => (
+                      <Picker.Item key={dept} label={dept} value={dept} />
+                    ))}
+                  </Picker>
+                </View>
                 <TextInput
                   style={styles.input}
                   value={studentYear}

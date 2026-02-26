@@ -7,6 +7,7 @@ import {
   StyleSheet,
   SafeAreaView,
   Image,
+  Platform,
 } from "react-native";
 import { useAuth } from "../../hooks/useAuth";
 import { ui } from "../../theme/ui";
@@ -17,10 +18,20 @@ export default function LoginScreen({ navigation }) {
   const [password, setPassword] = useState("");
   const [err, setErr] = useState("");
 
+  const blurActiveWebElement = () => {
+    if (Platform.OS !== "web") return;
+    if (typeof document === "undefined") return;
+    if (document.activeElement && typeof document.activeElement.blur === "function") {
+      document.activeElement.blur();
+    }
+  };
+
   const onLogin = async () => {
     try {
       setErr("");
+      blurActiveWebElement();
       await login(email.trim(), password);
+      blurActiveWebElement();
     } catch (e) {
       setErr(e?.response?.data?.message || "Login failed");
     }

@@ -2,12 +2,12 @@ import React, { useCallback, useState } from "react";
 import {
   SafeAreaView,
   View,
+  ScrollView,
   Text,
   StyleSheet,
   TouchableOpacity,
 } from "react-native";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
-import client from "../../api/client";
 import { getMyDashboard } from "../../api/endpoints";
 import { ui } from "../../theme/ui";
 
@@ -16,28 +16,24 @@ export default function DashboardScreen() {
   const [data, setData] = useState({ title: "Dashboard", cards: [] });
   const [err, setErr] = useState("");
 
-  const [stats, setStats] = useState({
-    usersCount: 0,
-    appointmentsCount: 0,
-    casesCount: 0,
-  });
-
-  const load = async () => {
+  const load = useCallback(async () => {
     try {
-      const { data } = await getMyDashboard();
-      setStats({
-        usersCount: data?.usersCount ?? 0,
-        appointmentsCount: data?.appointmentsCount ?? 0,
-        casesCount: data?.casesCount ?? 0,
+      const payload = await getMyDashboard();
+      setData({
+        title: payload?.title || "Dashboard",
+        cards: Array.isArray(payload?.cards) ? payload.cards : [],
       });
+      setErr("");
     } catch (e) {
-      setStats({ usersCount: 0, appointmentsCount: 0, casesCount: 0 }); // safe fallback
+      setData({ title: "Dashboard", cards: [] });
+      setErr(e?.response?.data?.message || "Failed to load dashboard");
     }
-  };
+  }, []);
 
   useFocusEffect(
     useCallback(() => {
       load();
+      return undefined;
     }, [load]),
   );
 
@@ -45,7 +41,11 @@ export default function DashboardScreen() {
     <SafeAreaView style={styles.root}>
       <Text style={styles.title}>{data.title}</Text>
       {!!err && <Text style={styles.error}>{err}</Text>}
-      <View style={styles.grid}>
+      <ScrollView
+        style={styles.scroll}
+        contentContainerStyle={styles.grid}
+        showsVerticalScrollIndicator={false}
+      >
         {(data.cards || []).map((c) => (
           <TouchableOpacity
             key={c.key || c.label}
@@ -56,7 +56,7 @@ export default function DashboardScreen() {
             <Text style={styles.label}>{c.label}</Text>
           </TouchableOpacity>
         ))}
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -64,31 +64,48 @@ export default function DashboardScreen() {
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    backgroundColor: "#F1F5F9",
-    paddingHorizontal: 16,
-    paddingTop: 12,
-    paddingBottom: 80, // add
+    backgroundColor: ui.colors.bg,
+    paddingHorizontal: 18,
+    paddingTop: 16,
+    paddingBottom: 8,
+  },
+  scroll: {
+    flex: 1,
   },
   title: {
-    fontSize: 34,
+    fontSize: 32,
     fontWeight: "800",
-    color: "#0F172A",
-    marginBottom: 12,
+    color: ui.colors.text,
+    marginBottom: 14,
   },
   error: { color: ui.colors.danger, marginBottom: 8 },
-  grid: { gap: 10 },
-  card: {
-    backgroundColor: "#fff",
-    borderRadius: 14,
-    borderWidth: 1,
-    borderColor: "#E2E8F0",
-    padding: 14,
-    shadowColor: "#000",
-    shadowOpacity: 0.05,
-    shadowRadius: 8,
-    shadowOffset: { width: 0, height: 2 },
-    elevation: 2,
+  grid: {
+    gap: 12,
+    paddingBottom: 110,
   },
-  value: { fontSize: 34, fontWeight: "800", color: "#2563EB" },
-  label: { marginTop: 4, color: "#475569", fontSize: 17, fontWeight: "600" },
+  card: {
+    backgroundColor: ui.colors.card,
+    borderRadius: ui.radius.md,
+    borderWidth: 1,
+    borderColor: ui.colors.border,
+    paddingVertical: 18,
+    paddingHorizontal: 16,
+    minHeight: 96,
+    alignItems: "center",
+    justifyContent: "center",
+    ...ui.cardShadow,
+  },
+  value: {
+    fontSize: 36,
+    fontWeight: "800",
+    color: ui.colors.primary,
+    textAlign: "center",
+  },
+  label: {
+    marginTop: 6,
+    color: ui.colors.muted,
+    fontSize: 16,
+    fontWeight: "600",
+    textAlign: "center",
+  },
 });
