@@ -20,19 +20,16 @@
       "supportsTablet": true
     },
     "android": {
-      "package": "com.mahiitservics.dentallms",
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/icon.png",
-        "backgroundColor": "#ffffff"
-      }
+      "package": "com.mahiitservices.dantsetu"
     },
     "web": {
       "favicon": "./assets/images/favicon.png"
     },
     "extra": {
       "eas": {
-        "projectId": "95815150-284a-4a16-8f19-212716338e41"
+        "projectId": "e9d17736-d450-4d54-9bf5-0baa6c93461b"
       }
-    }
+    },
+    "owner": "vikram.gupta205"
   }
 }
