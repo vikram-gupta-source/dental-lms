@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Dental Hospital Management & Teaching System",
-    "slug": "dental-hospital-management-teaching-system",
+    "name": "DantSetu",
+    "slug": "dant-setu",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -19,7 +19,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/icon.png",
         "backgroundColor": "#ffffff"
       }
     },

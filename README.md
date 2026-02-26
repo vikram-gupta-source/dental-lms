@@ -16,7 +16,7 @@ The Dental Hospital Management & Teaching System is a full-stack application des
 
 ## Project Structure
 ```
-dental-hospital-management-teaching-system
+DantSetu
 ├── backend
 │   ├── src
 │   ├── .env.example
